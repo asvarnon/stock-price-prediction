@@ -50,4 +50,35 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(xTrain, yTrain, epochs=25, batch_size=32)
 
 # TEST THE MODEL ACCURACY ON EXISTING DATA
+testStart = dt.datetime(2020,1,1)
+testEnd = dt.datetime.now()
 
+testData = web.DataReader(company, 'yahoo', testStart, testEnd)
+actualPrices = testData['Close'].values
+
+totalDataset = pd.concat((data['Close']. testData['Close']), axis=0)
+modelInputs = totalDataset[len(totalDataset) - len(testData) - predictionDays:].values
+modelInputs = modelInputs.reshape(-1,1)
+modelInputs = scaler.transform(modelInputs)
+
+#make predictions on test data
+
+for x in range(predictionDays, len(modelInputs)):
+    xTest.append(modelInputs[x-predictionDays:x, 0])
+
+xTest = np.array(xTest)
+xTest = np.reshape(xTest, (xTest.shape[0], xTest.shape[1], 1))
+
+predictedPrices = model.predict(xTest)
+predictedPrices = scaler.inverse_transform(predictedPrices)
+
+
+#plot test predictions
+
+plt.plot(actualPrices, color='black', label=f'Actual {company} price')
+plt.plot(predictedPrices, color='green', label=f'predicted {company} price')
+plt.title(f'{company} Share Price')
+plt.xlabel('Time')
+plt.ylabel(f'{company} Share Price')
+plt.legend()
+plt.show()
