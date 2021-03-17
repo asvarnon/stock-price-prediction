@@ -1,0 +1,1 @@
+Basic project to understand neural networks and machine learning
