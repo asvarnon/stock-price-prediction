@@ -35,3 +35,19 @@ xTrain, yTrain = np.array(xTrain), np.array(yTrain)
 xTrain = np.reshape(xTrain, (xTrain.shape[0], xTrain.shape[1], 1))
 
 #build the model
+
+model = Sequential()
+
+model.add(LSTM(units = 50, returnSequences=True, inputShape=(xTrain.shape[1], 1)))
+model.add(Dropout(0.2))
+model.add(LSTM(units=50, returnSequences=True))
+model.add(Dropout(0.2))
+model.add(LSTM(units=50))
+model.add(Dropout(0.2))
+model.add(Dense(units=1)) #prediction of next closing value
+
+model.compile(optimizer='adam', loss='mean_squared_error')
+model.fit(xTrain, yTrain, epochs=25, batch_size=32)
+
+# TEST THE MODEL ACCURACY ON EXISTING DATA
+
